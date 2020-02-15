@@ -67,8 +67,54 @@
     </div>
   </div>
 
+<------------------>
+<------SCRIPT------>
+<------------------>
+  
   <script src="https://unpkg.com/@pusher/chatkit-client"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  //index.html
+  <script>
+
+const ROOM_ID = 'ROOM_ID';
+
+const usernameForm = document.getElementById('username-form');
+
+usernameForm.addEventListener('submit', e => {
+  e.preventDefault();
+
+  const username = e.target.username.value;
+
+  axios
+    .post('http://localhost:3001/users', { username })
+    .then(() => {
+      document.getElementById('join').style.display = 'none';
+      document.getElementById('chatbox').style.display = 'block';
+
+      const tokenProvider = new Chatkit.TokenProvider({
+        url: 'http://localhost:3001/authenticate',
+      });
+
+      const chatManager = new Chatkit.ChatManager({
+        instanceLocator: 'PUSHER_INSTANCE_LOCATOR',
+        userId: username,
+        tokenProvider,
+      });
+
+      chatManager
+        .connect()
+        .then(currentUser => {
+          currentUser
+            .subscribeToRoom({
+              roomId: ROOM_ID,
+              messageLimit: 100,
+            })
+            .catch(error => console.error(error));
+    })
+    .catch(error => console.error(error));
+});
+  </script>
+
 </body>
 
 </html>
