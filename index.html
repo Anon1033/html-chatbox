@@ -163,6 +163,18 @@ currentUser.rooms[0].users.forEach(user => {
       });
     })
     .catch(error => console.error(error));
+        
+    function addUserElement(user) {
+  const onlineUsers = document.getElementById('onlineUsers');
+  const singleUser = document.createElement('li');
+
+  singleUser.className = 'list-group-item';
+  singleUser.id = user.id;
+
+  singleUser.appendChild(document.createTextNode(user.name));
+  onlineUsers.appendChild(singleUser);
+}    
+       
   </script>
 
 </body>
