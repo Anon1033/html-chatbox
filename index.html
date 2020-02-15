@@ -106,13 +106,55 @@ usernameForm.addEventListener('submit', e => {
         .then(currentUser => {
           currentUser
             .subscribeToRoom({
-              roomId: 8326008,
-              messageLimit: 100,
-            })
-            .catch(error => console.error(error));
+      roomId: 5881060,
+      hooks: {
+        onMessage: message => {
+          const { senderId, text } = message;
+
+          const messageList = document.getElementById('messageList');
+          const messageUser = document.createElement('dt');
+          const messageBody = document.createElement('dd');
+
+          messageUser.appendChild(document.createTextNode(senderId));
+          messageBody.appendChild(document.createTextNode(text));
+
+          messageList.appendChild(messageUser);
+          messageList.appendChild(messageBody);
+        },
+        onPresenceChanged: (state, user) => {
+          if (currentUser.id !== user.id) {
+            addUserElement(user);
+          }
+
+          if (state.current === 'offline') {
+            document.getElementById(user.id).remove()
+          }
+        },
+      },
+      messageLimit: 100,
+    })
+    .then(() => {
+      currentUser.rooms[0].users.forEach(user => {
+        if (user.presence.state === 'online') {
+          addUserElement(user);
+        }
+      });
+
+      const sendMessage = document.getElementById('sendMessage');
+      sendMessage.addEventListener('submit', e => {
+        e.preventDefault();
+
+        const message = e.target.message.value;
+
+        currentUser.sendMessage({
+          text: message,
+          roomId: 5881060,
+        });
+
+        e.target.message.value = '';
+      });
     })
     .catch(error => console.error(error));
-});
   </script>
 
 </body>
