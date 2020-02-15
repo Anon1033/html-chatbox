@@ -139,6 +139,14 @@ usernameForm.addEventListener('submit', e => {
           addUserElement(user);
         }
       });
+            
+      ...
+currentUser.rooms[0].users.forEach(user => {
+    if (user.presence.state === 'online') {
+        addUserElement(user);
+    }
+});
+...
 
       const sendMessage = document.getElementById('sendMessage');
       sendMessage.addEventListener('submit', e => {
